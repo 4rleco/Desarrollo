@@ -15,12 +15,12 @@ enum Screen
 	Exit,
 };
 
-void SetScreenWidth(int screenWidth)
+void SetScreenWidth(int& screenWidth)
 {
 	screenWidth = 800;
 }
 
-void SetScreenHeight(int screenHeight)
+void SetScreenHeight(int& screenHeight)
 {
 	screenHeight = 450;
 }
@@ -38,13 +38,16 @@ int GetScreenHeight(int screenHeight)
 // inicializa todo
 void InitAll(Ball& ball, Pad& pad1, Pad& pad2, Pad& ia, int screenWidth, int screenHeight)
 {
+	SetScreenWidth(screenWidth);
+	SetScreenHeight(screenHeight);
+
 	slWindow(screenWidth, screenHeight, "Pong", false);
 
-	InitBall(ball);
+	InitBall(ball, screenWidth, screenHeight);
 
-	InitPads(pad1, GetScreenWidth(screenWidth) / 10, GetScreenHeight(screenHeight) / 2, SL_KEY_KEYPAD_5, SL_KEY_KEYPAD_2);
-	InitPads(pad2, (GetScreenWidth(screenWidth) - 100), GetScreenHeight(screenHeight) / 2, SL_KEY_UP, SL_KEY_DOWN);
-	InitIaPad(ia, (GetScreenWidth(screenWidth) - 100), GetScreenHeight(screenHeight) / 2);
+	InitPads(pad1, GetScreenWidth(screenWidth) / 10, GetScreenHeight(screenHeight) / 2, screenHeight, SL_KEY_KEYPAD_5, SL_KEY_KEYPAD_2);
+	InitPads(pad2, (GetScreenWidth(screenWidth) - 100), GetScreenHeight(screenHeight) / 2, screenHeight, SL_KEY_UP, SL_KEY_DOWN);
+	InitIaPad(ia, (GetScreenWidth(screenWidth) - 100), GetScreenHeight(screenHeight) / 2, screenHeight);
 }
 
 void DrawFigures(Pad pad1, Pad pad2, Ball ball, int screenWidth, int screenHeight)
@@ -125,10 +128,10 @@ void PointsReset(Pad& pad)
 }
 
 // colision de las palteas con los bordes
-void PadColision(Pad& pad)
+void PadColision(Pad& pad, int screenHeight)
 {
-	int maxScreenHeight = GetScreenHeight();
-	int minScreenHeight = (GetScreenHeight() - GetScreenHeight());
+	int maxScreenHeight = GetScreenHeight(screenHeight);
+	int minScreenHeight = (GetScreenHeight(screenHeight - GetScreenHeight(screenHeight)));
 
 	if (pad.positionY <= minScreenHeight)
 	{
@@ -143,39 +146,39 @@ void PadColision(Pad& pad)
 	}
 }
 
-void PadMovement(Pad& pad)
+void PadMovement(Pad& pad, int screenHeight)
 {
-	if (IsKeyDown(pad.keyUp))
+	if (slGetKey(pad.keyUp))
 	{
-		pad.positionY -= pad.speed * GetFrameTime();
+		//pad.positionY -= pad.speed * GetFrameTime();
 	}
 
-	if (IsKeyDown(pad.keyDown))
+	if (slGetKey(pad.keyDown))
 	{
-		pad.positionY += pad.speed * GetFrameTime();
+		//pad.positionY += pad.speed * GetFrameTime();
 	}
 
-	PadColision(pad);
+	PadColision(pad, screenHeight);
 }
 
 void IaPadMovement(Pad& pad, Ball ball)
 {
-	if (pad.positionY + pad.height / 2 > ball.position.y)
+	if (pad.positionY + pad.height / 2 > ball.positionY)
 	{
-		pad.positionY -= 180.0f * GetFrameTime();
+		//pad.positionY -= 180.0f * GetFrameTime();
 	}
-	else if (pad.positionY + pad.width / 2 <= ball.position.y)
+	else if (pad.positionY + pad.width / 2 <= ball.positionY)
 	{
-		pad.positionY += 180.0f * GetFrameTime();
+		//pad.positionY += 180.0f * GetFrameTime();
 	}
 }
 
 // chequea si la pelota colisiona con las paredes
-void BallCollision(Ball& ball, Pad& pad1, Pad& pad2, bool& ballCollidingWithWalls, int& ballInicialSpeedX, int& ballInicialSpeedY)
+void BallCollision(Ball& ball, Pad& pad1, Pad& pad2, int screenWidth, bool& ballCollidingWithWalls, int& ballInicialSpeedX, int& ballInicialSpeedY)
 {
 	int minScreenPosX = 0;
 
-	if (ball.position.x >= (GetScreenWidth() - ball.radius))
+	if (ball.positionX >= (GetScreenWidth(screenWidth) - ball.radius))
 	{
 		//std::cout << "Colison Right" << std::endl;
 		pad1.points++;
@@ -185,7 +188,7 @@ void BallCollision(Ball& ball, Pad& pad1, Pad& pad2, bool& ballCollidingWithWall
 		ballCollidingWithWalls = true;
 	}
 
-	else if (ball.position.x <= (minScreenPosX + ball.radius))
+	else if (ball.positionX <= (minScreenPosX + ball.radius))
 	{
 		//std::cout << "Colison Left" << std::endl;
 		pad2.points++;
@@ -200,27 +203,27 @@ void PadBallCollision(Ball& ball, Pad pad)
 	float ballWith = ball.radius * 2;
 	float ballHeight = ball.radius * 2;
 
-	if ((pad.positionX + pad.width >= ball.position.x) &&
-		(pad.positionX <= (ball.position.x - ball.radius) + ballWith) &&
-		(pad.positionY + pad.height >= ball.position.y) &&
-		(pad.positionY <= (ball.position.y - ball.radius) + ballHeight))
+	if ((pad.positionX + pad.width >= ball.positionX) &&
+		(pad.positionX <= (ball.positionX - ball.radius) + ballWith) &&
+		(pad.positionY + pad.height >= ball.positionY) &&
+		(pad.positionY <= (ball.positionY - ball.radius) + ballHeight))
 	{
 
-		if (ball.position.x > pad.positionX)
+		if (ball.positionX > pad.positionX)
 		{
-			ball.position.x = (pad.positionX + pad.width) + ball.radius;
+			ball.positionX = (pad.positionX + pad.width) + ball.radius;
 		}
 
 		else
 		{
-			ball.position.x = pad.positionX - ball.radius;
+			ball.positionX = pad.positionX - ball.radius;
 		}
 
 		ball.speed.x *= -1.1f;
 	}
 }
 
-void BallMovement(Ball& ball, Pad& pad1, Pad& pad2, int& ballInicialSpeedX, int& ballInicialSpeedY, bool ballCollidingWithWalls, bool& isBallInicialSpeedRandomized)
+void BallMovement(Ball& ball, Pad& pad1, Pad& pad2, int screenWidth, int screenHeight, int& ballInicialSpeedX, int& ballInicialSpeedY, bool ballCollidingWithWalls, bool& isBallInicialSpeedRandomized)
 {
 	if (isBallInicialSpeedRandomized == false)
 	{
@@ -240,38 +243,38 @@ void BallMovement(Ball& ball, Pad& pad1, Pad& pad2, int& ballInicialSpeedX, int&
 		isBallInicialSpeedRandomized = true;
 	}
 
-	ball.position.x += ball.speed.x * ballInicialSpeedX * GetFrameTime();
-	ball.position.y += ball.speed.y * ballInicialSpeedY * GetFrameTime();
+	//ball.positionX += ball.speed.x * ballInicialSpeedX * GetFrameTime();
+	//ball.positionY += ball.speed.y * ballInicialSpeedY * GetFrameTime();
 
-	if ((ball.position.x >= (GetScreenWidth() - ball.radius)) || (ball.position.x <= ball.radius))
+	if ((ball.positionX >= (GetScreenWidth(screenWidth) - ball.radius)) || (ball.positionX <= ball.radius))
 		ball.speed.x *= -1.0f;
 
-	if ((ball.position.y >= (GetScreenHeight() - ball.radius)) || (ball.position.y <= ball.radius))
+	if ((ball.positionY >= (GetScreenHeight(screenHeight) - ball.radius)) || (ball.positionY <= ball.radius))
 		ball.speed.y *= -1.0f;
 
-	BallCollision(ball, pad1, pad2, ballCollidingWithWalls, ballInicialSpeedX, ballInicialSpeedY);
+	BallCollision(ball, pad1, pad2, screenWidth, ballCollidingWithWalls, ballInicialSpeedX, ballInicialSpeedY);
 
 	if (ballCollidingWithWalls)
 	{
-		ball.position.x = ball.inicialPosX;
-		ball.position.y = ball.inicialPosY;
+		ball.positionX = ball.inicialPosX;
+		ball.positionY = ball.inicialPosY;
 		isBallInicialSpeedRandomized = false;
 	}
 }
 
 //updatea el modo un jugador
-void UpdateSinglePlayer(Ball& ball, Pad& pad1, Pad& ia, Screen& screen, int& ballInicialSpeedX, int& ballInicialSpeedY, bool ballCollidingWithWalls, bool& hasWon, bool& isBallInicialSpeedRandomized)
+void UpdateSinglePlayer(Ball& ball, Pad& pad1, Pad& ia, Screen& screen, int screenWidth, int screenHeight, int& ballInicialSpeedX, int& ballInicialSpeedY, bool ballCollidingWithWalls, bool& hasWon, bool& isBallInicialSpeedRandomized)
 {
 	if (!hasWon)
 	{
 		// mov. primer rectangulo restringido a la pantalla
-		PadMovement(pad1);
+		PadMovement(pad1, screenHeight);
 
 		// mov. segundo rectangulo restringido a la pantalla
 		IaPadMovement(ia, ball);
 
 		// mov. pelota
-		BallMovement(ball, pad1, ia, ballInicialSpeedX, ballInicialSpeedY, ballCollidingWithWalls, isBallInicialSpeedRandomized);
+		BallMovement(ball, pad1, ia, screenWidth, screenHeight, ballInicialSpeedX, ballInicialSpeedY, ballCollidingWithWalls, isBallInicialSpeedRandomized);
 
 		PadBallCollision(ball, pad1);
 		PadBallCollision(ball, ia);
@@ -285,8 +288,8 @@ void UpdateSinglePlayer(Ball& ball, Pad& pad1, Pad& ia, Screen& screen, int& bal
 
 	if (pad1.points >= pad1.maxPoints)
 	{
-		DrawText("Player 1 wins!", 300, GetScreenHeight() - 300, 30, RED);
-		if (IsKeyPressed(KEY_ENTER))
+		//DrawText("Player 1 wins!", 300, GetScreenHeight() - 300, 30, RED);
+		if (slGetKey(SL_KEY_ENTER))
 		{
 			PointsReset(pad1);
 			PointsReset(ia);
@@ -297,8 +300,8 @@ void UpdateSinglePlayer(Ball& ball, Pad& pad1, Pad& ia, Screen& screen, int& bal
 
 	else if (ia.points >= ia.maxPoints)
 	{
-		DrawText("The computer wins!", 300, GetScreenHeight() - 300, 30, RED);
-		if (IsKeyPressed(KEY_ENTER))
+		//DrawText("The computer wins!", 300, GetScreenHeight() - 300, 30, RED);
+		if (slGetKey(SL_KEY_ENTER))
 		{
 			PointsReset(pad1);
 			PointsReset(ia);
@@ -309,18 +312,18 @@ void UpdateSinglePlayer(Ball& ball, Pad& pad1, Pad& ia, Screen& screen, int& bal
 }
 
 //updatea el modo dos jugadores
-void UpdateMultiplayer(Ball& ball, Pad& pad1, Pad& pad2, Screen& screen, int& ballInicialSpeedX, int& ballInicialSpeedY, bool ballCollidingWithWalls, bool& hasWon, bool& isBallInicialSpeedRandomized)
+void UpdateMultiplayer(Ball& ball, Pad& pad1, Pad& pad2, Screen& screen, int screenWidth, int screenHeight, int& ballInicialSpeedX, int& ballInicialSpeedY, bool ballCollidingWithWalls, bool& hasWon, bool& isBallInicialSpeedRandomized)
 {
 	if (!hasWon)
 	{
 		// mov. primer rectangulo restringido a la pantalla
-		PadMovement(pad1);
+		PadMovement(pad1, screenHeight);
 
 		// mov. segundo rectangulo restringido a la pantalla
-		PadMovement(pad2);
+		PadMovement(pad2, screenHeight);
 
 		// mov. pelota
-		BallMovement(ball, pad1, pad2, ballInicialSpeedX, ballInicialSpeedY, ballCollidingWithWalls, isBallInicialSpeedRandomized);
+		BallMovement(ball, pad1, pad2, screenWidth, screenHeight, ballInicialSpeedX, ballInicialSpeedY, ballCollidingWithWalls, isBallInicialSpeedRandomized);
 
 		PadBallCollision(ball, pad1);
 		PadBallCollision(ball, pad2);
@@ -334,8 +337,8 @@ void UpdateMultiplayer(Ball& ball, Pad& pad1, Pad& pad2, Screen& screen, int& ba
 
 	if (pad1.points >= pad1.maxPoints)
 	{
-		DrawText("Player 1 wins1", 300, GetScreenHeight() - 300, 30, RED);
-		if (IsKeyPressed(KEY_ENTER))
+		//DrawText("Player 1 wins1", 300, GetScreenHeight() - 300, 30, RED);
+		if (slGetKey(SL_KEY_ENTER))
 		{
 			PointsReset(pad1);
 			PointsReset(pad2);
@@ -346,8 +349,8 @@ void UpdateMultiplayer(Ball& ball, Pad& pad1, Pad& pad2, Screen& screen, int& ba
 
 	else if (pad2.points >= pad2.maxPoints)
 	{
-		DrawText("Player 2 wins!", 300, GetScreenHeight() - 300, 30, RED);
-		if (IsKeyPressed(KEY_ENTER))
+		//DrawText("Player 2 wins!", 300, GetScreenHeight() - 300, 30, RED);
+		if (slGetKey(SL_KEY_ENTER))
 		{
 			PointsReset(pad1);
 			PointsReset(pad2);
@@ -389,14 +392,14 @@ void GameLoop()
 
 	InitAll(ball, pad1, pad2, ia, screenWidth, screenHeight);
 
-	while (!endGame && !WindowShouldClose())
+	while (!endGame && !slShouldClose())
 	{
-		SetExitKey(KEY_NULL);
+		//SetExitKey(KEY_NULL);
 
 		switch (screen)
 		{
 		case MainMenu:
-			if (IsKeyPressed(KEY_DOWN))
+			if (slGetKey(SL_KEY_DOWN))
 			{
 				mainMenuChoice++;
 				if (mainMenuChoice >= maxChoice)
@@ -405,7 +408,7 @@ void GameLoop()
 				}
 			}
 
-			else if (IsKeyPressed(KEY_UP))
+			else if (slGetKey(SL_KEY_UP))
 			{
 				mainMenuChoice--;
 				if (mainMenuChoice <= minChoice)
@@ -414,19 +417,19 @@ void GameLoop()
 				}
 			}
 
-			DrawMenu(screen, mainMenuChoice);
+			DrawMenu(screen, mainMenuChoice, screenWidth, screenHeight);
 			break;
 
 		case SinglePalyer:
-			UpdateSinglePlayer(ball, pad1, ia, screen, ballInicialSpeedX, ballInicialSpeedY, isCollidingWithScreen, hasWon, isBallInicialSpeedRandomized);
+			UpdateSinglePlayer(ball, pad1, ia, screen, screenWidth, screenHeight, ballInicialSpeedX, ballInicialSpeedY, isCollidingWithScreen, hasWon, isBallInicialSpeedRandomized);
 			break;
 
 		case MultiPlayer:
-			UpdateMultiplayer(ball, pad1, pad2, screen, ballInicialSpeedX, ballInicialSpeedY, isCollidingWithScreen, hasWon, isBallInicialSpeedRandomized);
+			UpdateMultiplayer(ball, pad1, pad2, screen, screenWidth, screenHeight, ballInicialSpeedX, ballInicialSpeedY, isCollidingWithScreen, hasWon, isBallInicialSpeedRandomized);
 			break;
 		}
 
-		BeginDrawing();
+		//BeginDrawing();
 
 		switch (screen)
 		{
@@ -435,40 +438,40 @@ void GameLoop()
 			break;
 
 		case SinglePalyer:
-			DrawFigures(pad1, ia, ball);
+			DrawFigures(pad1, ia, ball, screenWidth, screenHeight);
 			break;
 
 		case MultiPlayer:
-			DrawFigures(pad1, pad2, ball);
+			DrawFigures(pad1, pad2, ball, screenWidth, screenHeight);
 			break;
 
 		case Rules:
-			DrawText("-Use \"w and s\" to move de left pad", GetScreenWidth() - 700, GetScreenHeight() / 2 - 100, 25, WHITE);
+			/*DrawText("-Use \"w and s\" to move de left pad", GetScreenWidth() - 700, GetScreenHeight() / 2 - 100, 25, WHITE);
 			DrawText("-And the up and down arrow keys for the right pad", GetScreenWidth() - 700, GetScreenHeight() / 2 - 50, 25, WHITE);
 			DrawText("-The first one to score 7 points wins", GetScreenWidth() - 700, GetScreenHeight() / 2, 25, WHITE);
 			DrawText("-Press \"backspace\" to return to the menu", GetScreenWidth() - 700, GetScreenHeight() - 180, 25, WHITE);
-			if (IsKeyPressed(KEY_BACKSPACE))
+			*/if (slGetKey(SL_KEY_BACKSPACE))
 			{
 				screen = Screen::MainMenu;
 			}
 			break;
 
 		case Credits:
-			DrawText("Game made by Joaquin Herrero Lendner", GetScreenWidth() / 2 - 200, GetScreenHeight() / 2, 25, WHITE);
-			if (IsKeyPressed(KEY_BACKSPACE))
+			//DrawText("Game made by Joaquin Herrero Lendner", GetScreenWidth() / 2 - 200, GetScreenHeight() / 2, 25, WHITE);
+			if (slGetKey(SL_KEY_BACKSPACE))
 			{
 				screen = Screen::MainMenu;
 			}
 			break;
 
 		case Exit:
-			DrawText("Do yo want to close the game?", GetScreenWidth() - 700, GetScreenHeight() / 2, 25, WHITE);
+			/*DrawText("Do yo want to close the game?", GetScreenWidth() - 700, GetScreenHeight() / 2, 25, WHITE);
 			DrawText("Press \"esc\" to close the game or \"backspace\" to return to the menu", GetScreenWidth() - 700, GetScreenHeight() - 200, 15, WHITE);
-			if (IsKeyPressed(KEY_ESCAPE))
+			*/if (slGetKey(SL_KEY_ESCAPE))
 			{
 				endGame = true;
 			}
-			else if (IsKeyPressed(KEY_BACKSPACE))
+			else if (slGetKey(SL_KEY_BACKSPACE))
 			{
 				screen = Screen::MainMenu;
 			}
@@ -476,10 +479,10 @@ void GameLoop()
 			break;
 		}
 
-		ClearBackground(BLACK);
-
-		EndDrawing();
+		slSetBackColor(0,0,0);
+	
+		slRender();
 	}
 
-	CloseWindow();
+	slClose();
 }

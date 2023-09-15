@@ -1,7 +1,7 @@
 #include "pad.h"
 #include "gameData/game.h"
 
-void InitPads(Pad& pad, int positionX, int positionY, int keyUp, int keyDown, int screenHeight)
+void InitPads(Pad& pad, int positionX, int positionY, int screenHeight, int keyUp, int keyDown)
 {
 	pad.positionX = positionX;
 	pad.positionY = positionY;

@@ -15,6 +15,7 @@ struct Ball
 	double positionX;
 	double positionY;
 	double radius;
+	Vector2 normalSpeed;
 	Vector2 speed;
 };
 

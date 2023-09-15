@@ -24,6 +24,6 @@ struct Pad
 };
 
 // inicializa los pads
-void InitPads(Pad& pad, int positionX, int positionY, int keyUp, int keyDown);
+void InitPads(Pad& pad, int positionX, int positionY, int screenHeight, int keyUp, int keyDown);
 
 void InitIaPad(Pad& pad, int positionX, int positionY, int screenHeight);
