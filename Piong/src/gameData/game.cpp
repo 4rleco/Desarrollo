@@ -70,6 +70,11 @@ void DrawFigures(Pad pad1, Pad pad2, Ball ball, int screenWidth, int screenHeigh
 // dibuja el menú
 void DrawMenu(Screen& screen, int counter, int screenWidth, int screenHeight)
 {
+	slSetTextAlign(SL_ALIGN_CENTER);
+	slSetForeColor(1, 1, 1, 1);
+	slSetFont(slLoadFont("fonts/ArialTh.ttf"),100);
+	slSetFontSize(100);
+	slText(screenWidth / 2, screenHeight / 2, "Pong");
 	/*DrawText("Pong", GetScreenWidth() / 2 - 100, GetScreenHeight() - 400, 100, WHITE);
 	DrawText("Use arrow keys to navigate the menu", GetScreenWidth() - 600, GetScreenHeight() / 2 - 50, 20, WHITE);
 	DrawText("SinglePalyer", GetScreenWidth() / 2 - 40, GetScreenHeight() / 2, 30, WHITE);
@@ -372,8 +377,8 @@ void GameLoop()
 
 	Ball ball;
 
-	int screenWidth = 0;
-	int screenHeight = 0;
+	float screenWidth = 0;
+	float screenHeight = 0;
 
 	int mainMenuChoice = 1;
 	int minChoice = SinglePalyer;
@@ -394,7 +399,6 @@ void GameLoop()
 
 	while (!endGame && !slShouldClose())
 	{
-		//SetExitKey(KEY_NULL);
 
 		switch (screen)
 		{
@@ -429,8 +433,6 @@ void GameLoop()
 			break;
 		}
 
-		//BeginDrawing();
-
 		switch (screen)
 		{
 		case MainMenu:
@@ -446,6 +448,7 @@ void GameLoop()
 			break;
 
 		case Rules:
+
 			/*DrawText("-Use \"w and s\" to move de left pad", GetScreenWidth() - 700, GetScreenHeight() / 2 - 100, 25, WHITE);
 			DrawText("-And the up and down arrow keys for the right pad", GetScreenWidth() - 700, GetScreenHeight() / 2 - 50, 25, WHITE);
 			DrawText("-The first one to score 7 points wins", GetScreenWidth() - 700, GetScreenHeight() / 2, 25, WHITE);
@@ -479,8 +482,8 @@ void GameLoop()
 			break;
 		}
 
-		slSetBackColor(0,0,0);
-	
+		slSetBackColor(0, 0, 0);
+
 		slRender();
 	}
 
