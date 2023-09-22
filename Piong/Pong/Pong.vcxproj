@@ -113,9 +113,13 @@
     </Link>
     <PostBuildEvent>
       <Command>copy /y "$(SolutionDir)libs\sigil\glew32.dll" "$(OutDir)"
+
 copy /y "$(SolutionDir)libs\sigil\OpenAL32.dll" "$(OutDir)"
+
 copy /y "$(SolutionDir)libs\sigil\sigil.dll" "$(OutDir)"
-copy /y "$(SolutionDir)libs\sigil\wrap_oal.dll" "$(OutDir)"</Command>
+
+copy /y "$(SolutionDir)libs\sigil\wrap_oal.dll" "$(OutDir)"
+copy /y "$(SolutionDir)Pong\res\fonts\VCR_OSD_MONO_1.001.ttf" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -137,6 +141,16 @@ copy /y "$(SolutionDir)libs\sigil\wrap_oal.dll" "$(OutDir)"</Command>
       <AdditionalDependencies>raylib.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /y "$(SolutionDir)libs\sigil\glew32.dll" "$(OutDir)"
+
+copy /y "$(SolutionDir)libs\sigil\OpenAL32.dll" "$(OutDir)"
+
+copy /y "$(SolutionDir)libs\sigil\sigil.dll" "$(OutDir)"
+
+copy /y "$(SolutionDir)libs\sigil\wrap_oal.dll" "$(OutDir)"
+copy /y "$(SolutionDir)Pong\res\fonts\VCR_OSD_MONO_1.001.ttf" "$(OutDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>

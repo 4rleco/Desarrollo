@@ -1,20 +1,5 @@
-﻿  game.cpp
-C:\Users\Aula 2\Desktop\Ej\Piong\src\gameData\game.cpp(208,17): warning C4244: 'inicializando': conversión de 'double' a 'float'; posible pérdida de datos
-C:\Users\Aula 2\Desktop\Ej\Piong\src\gameData\game.cpp(209,19): warning C4244: 'inicializando': conversión de 'double' a 'float'; posible pérdida de datos
-C:\Users\Aula 2\Desktop\Ej\Piong\src\gameData\game.cpp(370,12): warning C4244: 'argumento': conversión de 'time_t' a 'unsigned int'; posible pérdida de datos
-C:\Users\Aula 2\Desktop\Ej\Piong\src\gameData\game.cpp(398,45): warning C4244: 'argumento': conversión de 'float' a 'int'; posible pérdida de datos
-C:\Users\Aula 2\Desktop\Ej\Piong\src\gameData\game.cpp(398,32): warning C4244: 'argumento': conversión de 'float' a 'int'; posible pérdida de datos
-C:\Users\Aula 2\Desktop\Ej\Piong\src\gameData\game.cpp(424,50): warning C4244: 'argumento': conversión de 'float' a 'int'; posible pérdida de datos
-C:\Users\Aula 2\Desktop\Ej\Piong\src\gameData\game.cpp(424,37): warning C4244: 'argumento': conversión de 'float' a 'int'; posible pérdida de datos
-C:\Users\Aula 2\Desktop\Ej\Piong\src\gameData\game.cpp(428,60): warning C4244: 'argumento': conversión de 'float' a 'int'; posible pérdida de datos
-C:\Users\Aula 2\Desktop\Ej\Piong\src\gameData\game.cpp(428,47): warning C4244: 'argumento': conversión de 'float' a 'int'; posible pérdida de datos
-C:\Users\Aula 2\Desktop\Ej\Piong\src\gameData\game.cpp(432,61): warning C4244: 'argumento': conversión de 'float' a 'int'; posible pérdida de datos
-C:\Users\Aula 2\Desktop\Ej\Piong\src\gameData\game.cpp(432,48): warning C4244: 'argumento': conversión de 'float' a 'int'; posible pérdida de datos
-C:\Users\Aula 2\Desktop\Ej\Piong\src\gameData\game.cpp(443,45): warning C4244: 'argumento': conversión de 'float' a 'int'; posible pérdida de datos
-C:\Users\Aula 2\Desktop\Ej\Piong\src\gameData\game.cpp(443,32): warning C4244: 'argumento': conversión de 'float' a 'int'; posible pérdida de datos
-C:\Users\Aula 2\Desktop\Ej\Piong\src\gameData\game.cpp(447,47): warning C4244: 'argumento': conversión de 'float' a 'int'; posible pérdida de datos
-C:\Users\Aula 2\Desktop\Ej\Piong\src\gameData\game.cpp(447,34): warning C4244: 'argumento': conversión de 'float' a 'int'; posible pérdida de datos
-  Pong.vcxproj -> C:\Users\Aula 2\Desktop\Ej\Piong\bin\Debug\Pong.exe
+﻿  Pong.vcxproj -> C:\Users\Aula 2\Desktop\Desarrollo\Piong\bin\Debug\Pong.exe
+          1 archivo(s) copiado(s).
           1 archivo(s) copiado(s).
           1 archivo(s) copiado(s).
           1 archivo(s) copiado(s).

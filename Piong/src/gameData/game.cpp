@@ -1,6 +1,7 @@
 #include "game.h"
 #include "sl.h"
 #include <time.h>
+#include <string>
 #include <iostream>
 
 using namespace std;
@@ -17,7 +18,7 @@ enum Screen
 
 void InitFont()
 {
-	slSetFont(slLoadFont("fonts/VCR_OSD_MONO_1.001.ttf"), 100);
+	slSetFont(slLoadFont("res/fonts/VCR_OSD_MONO_1.001.ttf"), NULL);
 }
 
 void SetScreenWidth(int& screenWidth)
@@ -59,11 +60,14 @@ void InitAll(Ball& ball, Pad& pad1, Pad& pad2, Pad& ia, int screenWidth, int scr
 
 void DrawFigures(Pad pad1, Pad pad2, Ball ball, int screenWidth, int screenHeight)
 {
-	//DrawText(TextFormat("%i", pad1.points), GetScreenWidth() / 2 - 50, 10, 20, WHITE);
-	//DrawText(TextFormat("%i", pad2.points), GetScreenWidth() / 2 + 50, 10, 20, WHITE);
+	string points1 = to_string(pad1.points);
+	string points2 = to_string(pad2.points);
 
 	slSetForeColor(1, 1, 1, 1);
-	slRectangleFill(screenWidth / 2,screenHeight / 2, 5,screenHeight);
+	slText(200, 420, points1.c_str());
+	slText(600, 420, points2.c_str());
+
+	slRectangleFill(400, 225, 5, 450);
 
 	slSetForeColor(4, 0, 4, 1);
 	slRectangleFill(pad1.positionX, pad1.positionY, pad1.width, pad1.height);
@@ -80,7 +84,7 @@ void DrawMenu(Screen& screen, int counter, int screenWidth, int screenHeight)
 {
 	slSetTextAlign(SL_ALIGN_CENTER);
 	slSetForeColor(1, 1, 1, 1);
-	slSetFontSize(100);
+	slSetFontSize(200);
 	slText(400, 250, "Pong");
 
 	slSetFontSize(20);
@@ -311,7 +315,7 @@ void UpdateSinglePlayer(Ball& ball, Pad& pad1, Pad& ia, Screen& screen, int scre
 		slSetTextAlign(SL_ALIGN_CENTER);
 		slSetForeColor(1, 0, 0, 1);
 		slSetFontSize(30);
-		slText(300, 150, "Player 1 wins!");
+		slText(400, 420, "Player 1 wins!");
 		if (slGetKey(SL_KEY_ENTER))
 		{
 			PointsReset(pad1);
@@ -326,7 +330,7 @@ void UpdateSinglePlayer(Ball& ball, Pad& pad1, Pad& ia, Screen& screen, int scre
 		slSetTextAlign(SL_ALIGN_CENTER);
 		slSetForeColor(1, 0, 0, 1);
 		slSetFontSize(30);
-		slText(300, 150, "The computer wins!");
+		slText(400, 420, "The computer wins!");
 		if (slGetKey(SL_KEY_ENTER))
 		{
 			PointsReset(pad1);
@@ -366,7 +370,7 @@ void UpdateMultiplayer(Ball& ball, Pad& pad1, Pad& pad2, Screen& screen, int scr
 		slSetTextAlign(SL_ALIGN_CENTER);
 		slSetForeColor(1, 0, 0, 1);
 		slSetFontSize(30);
-		slText(300, 150, "Player 1 wins!");
+		slText(400, 420, "Player 1 wins!");
 		if (slGetKey(SL_KEY_ENTER))
 		{
 			PointsReset(pad1);
@@ -381,7 +385,7 @@ void UpdateMultiplayer(Ball& ball, Pad& pad1, Pad& pad2, Screen& screen, int scr
 		slSetTextAlign(SL_ALIGN_CENTER);
 		slSetForeColor(1, 0, 0, 1);
 		slSetFontSize(30);
-		slText(300, 150, "Player 2 wins!");
+		slText(400, 420, "Player 2 wins!");
 		if (slGetKey(SL_KEY_ENTER))
 		{
 			PointsReset(pad1);
@@ -407,9 +411,13 @@ void GameLoop()
 	float screenWidth = 0;
 	float screenHeight = 0;
 
+	float timer = 0;
+	float timerCoolDown = 0.4;
+
 	int mainMenuChoice = 1;
 	int minChoice = SinglePalyer;
 	int maxChoice = Exit;
+
 
 	int ballInicialSpeedX = 0;
 	int ballInicialSpeedY = 0;
@@ -426,12 +434,14 @@ void GameLoop()
 
 	while (!endGame && !slShouldClose())
 	{
+		timer -= slGetDeltaTime();
 
 		switch (screen)
 		{
 		case MainMenu:
 			if (slGetKey(SL_KEY_DOWN))
 			{
+				timer -= timerCoolDown;
 				mainMenuChoice++;
 				if (mainMenuChoice >= maxChoice)
 				{
@@ -441,6 +451,7 @@ void GameLoop()
 
 			else if (slGetKey(SL_KEY_UP))
 			{
+				timer -= timerCoolDown;
 				mainMenuChoice--;
 				if (mainMenuChoice <= minChoice)
 				{
@@ -508,7 +519,7 @@ void GameLoop()
 			slText(400, 250, "Do yo want to close the game?");
 			slText(400, 225, "Press \"esc\" to close the game");
 			slText(400, 200, "or \"backspace\" to return to the menu");
-			
+
 			if (slGetKey(SL_KEY_ESCAPE))
 			{
 				endGame = true;
