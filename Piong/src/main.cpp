@@ -2,7 +2,6 @@
 
 void main()
 {
-	//pepito
 	GameLoop();
 
 }

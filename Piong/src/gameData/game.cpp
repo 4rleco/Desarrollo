@@ -15,6 +15,11 @@ enum Screen
 	Exit,
 };
 
+void InitFont()
+{
+	slSetFont(slLoadFont("fonts/VCR_OSD_MONO_1.001.ttf"), 100);
+}
+
 void SetScreenWidth(int& screenWidth)
 {
 	screenWidth = 800;
@@ -43,11 +48,13 @@ void InitAll(Ball& ball, Pad& pad1, Pad& pad2, Pad& ia, int screenWidth, int scr
 
 	slWindow(screenWidth, screenHeight, "Pong", false);
 
+	InitFont();
+
 	InitBall(ball, screenWidth, screenHeight);
 
-	InitPads(pad1, GetScreenWidth(screenWidth) / 10, GetScreenHeight(screenHeight) / 2, screenHeight, SL_KEY_KEYPAD_5, SL_KEY_KEYPAD_2);
-	InitPads(pad2, (GetScreenWidth(screenWidth) - 100), GetScreenHeight(screenHeight) / 2, screenHeight, SL_KEY_UP, SL_KEY_DOWN);
-	InitIaPad(ia, (GetScreenWidth(screenWidth) - 100), GetScreenHeight(screenHeight) / 2, screenHeight);
+	InitPads(pad1, (GetScreenWidth(screenWidth) - 100), GetScreenHeight(screenHeight) / 2, screenHeight, SL_KEY_UP, SL_KEY_DOWN);
+	InitPads(pad2, GetScreenWidth(screenWidth) / 10, GetScreenHeight(screenHeight) / 2, screenHeight, SL_KEY_KEYPAD_5, SL_KEY_KEYPAD_2);
+	InitIaPad(ia, GetScreenWidth(screenWidth) / 10, GetScreenHeight(screenHeight) / 2, screenHeight);
 }
 
 void DrawFigures(Pad pad1, Pad pad2, Ball ball, int screenWidth, int screenHeight)
@@ -61,7 +68,7 @@ void DrawFigures(Pad pad1, Pad pad2, Ball ball, int screenWidth, int screenHeigh
 	slRectangleFill(pad1.positionX, pad1.positionY, pad1.width, pad1.height);
 
 	slSetForeColor(1, 0, 0, 1);
-	slCircleFill(ball.positionX, ball.positionY, ball.radius, 2);
+	slCircleFill(ball.positionX, ball.positionY, ball.radius, 10);
 
 	slSetForeColor(0, 1, 1, 1);
 	slRectangleFill(pad2.positionX, pad2.positionY, pad2.width, pad2.height);
@@ -72,21 +79,24 @@ void DrawMenu(Screen& screen, int counter, int screenWidth, int screenHeight)
 {
 	slSetTextAlign(SL_ALIGN_CENTER);
 	slSetForeColor(1, 1, 1, 1);
-	slSetFont(slLoadFont("fonts/ArialTh.ttf"),100);
 	slSetFontSize(100);
-	slText(screenWidth / 2, screenHeight / 2, "Pong");
-	/*DrawText("Pong", GetScreenWidth() / 2 - 100, GetScreenHeight() - 400, 100, WHITE);
-	DrawText("Use arrow keys to navigate the menu", GetScreenWidth() - 600, GetScreenHeight() / 2 - 50, 20, WHITE);
-	DrawText("SinglePalyer", GetScreenWidth() / 2 - 40, GetScreenHeight() / 2, 30, WHITE);
-	DrawText("MultiPlayer", GetScreenWidth() / 2 - 40, GetScreenHeight() - 190, 30, WHITE);
-	DrawText("Rules", GetScreenWidth() / 2 - 40, GetScreenHeight() - 160, 30, WHITE);
-	DrawText("Credits", GetScreenWidth() / 2 - 40, GetScreenHeight() - 130, 30, WHITE);
-	DrawText("Exit", GetScreenWidth() / 2 - 40, GetScreenHeight() - 100, 30, WHITE);*/
+	slText(400, 250, "Pong");
+
+	slSetFontSize(20);
+	slText(400, 230, "Use arrow keys to navigate the menu");
+
+	slSetFontSize(40);
+	slText(400, 190, "SinglePalyer");
+	slText(400, 150, "MultiPlayer");
+	slText(400, 110, "Rules");
+	slText(400, 70, "Credits");
+	slText(400, 30, "Exit");
 
 	switch (counter)
 	{
 	case SinglePalyer:
-		//DrawText("SinglePalyer", GetScreenWidth() / 2 - 40, GetScreenHeight() / 2, 30, RED);
+		slSetForeColor(1, 0, 0, 1);
+		slText(400, 190, "SinglePalyer");
 		if (slGetKey(SL_KEY_ENTER))
 		{
 			screen = SinglePalyer;
@@ -94,7 +104,8 @@ void DrawMenu(Screen& screen, int counter, int screenWidth, int screenHeight)
 		break;
 
 	case MultiPlayer:
-		//DrawText("MultiPlayer", GetScreenWidth() / 2 - 40, GetScreenHeight() - 190, 30, RED);
+		slSetForeColor(1, 0, 0, 1);
+		slText(400, 150, "MultiPlayer");
 		if (slGetKey(SL_KEY_ENTER))
 		{
 			screen = MultiPlayer;
@@ -102,7 +113,8 @@ void DrawMenu(Screen& screen, int counter, int screenWidth, int screenHeight)
 		break;
 
 	case Rules:
-		//DrawText("Rules", GetScreenWidth() / 2 - 40, GetScreenHeight() - 160, 30, RED);
+		slSetForeColor(1, 0, 0, 1);
+		slText(400, 110, "Rules");
 		if (slGetKey(SL_KEY_ENTER))
 		{
 			screen = Rules;
@@ -110,7 +122,8 @@ void DrawMenu(Screen& screen, int counter, int screenWidth, int screenHeight)
 		break;
 
 	case Credits:
-		//DrawText("Credits", GetScreenWidth() / 2 - 40, GetScreenHeight() - 130, 30, RED);
+		slSetForeColor(1, 0, 0, 1);
+		slText(400, 70, "Credits");
 		if (slGetKey(SL_KEY_ENTER))
 		{
 			screen = Credits;
@@ -118,7 +131,8 @@ void DrawMenu(Screen& screen, int counter, int screenWidth, int screenHeight)
 		break;
 
 	case Exit:
-		//DrawText("Exit", GetScreenWidth() / 2 - 40, GetScreenHeight() - 100, 30, RED);
+		slSetForeColor(1, 0, 0, 1);
+		slText(400, 30, "Exit");
 		if (slGetKey(SL_KEY_ENTER))
 		{
 			screen = Exit;
@@ -293,7 +307,10 @@ void UpdateSinglePlayer(Ball& ball, Pad& pad1, Pad& ia, Screen& screen, int scre
 
 	if (pad1.points >= pad1.maxPoints)
 	{
-		//DrawText("Player 1 wins!", 300, GetScreenHeight() - 300, 30, RED);
+		slSetTextAlign(SL_ALIGN_CENTER);
+		slSetForeColor(1, 0, 0, 1);
+		slSetFontSize(30);
+		slText(300, 150, "Player 1 wins!");
 		if (slGetKey(SL_KEY_ENTER))
 		{
 			PointsReset(pad1);
@@ -305,7 +322,10 @@ void UpdateSinglePlayer(Ball& ball, Pad& pad1, Pad& ia, Screen& screen, int scre
 
 	else if (ia.points >= ia.maxPoints)
 	{
-		//DrawText("The computer wins!", 300, GetScreenHeight() - 300, 30, RED);
+		slSetTextAlign(SL_ALIGN_CENTER);
+		slSetForeColor(1, 0, 0, 1);
+		slSetFontSize(30);
+		slText(300, 150, "The computer wins!");
 		if (slGetKey(SL_KEY_ENTER))
 		{
 			PointsReset(pad1);
@@ -342,7 +362,10 @@ void UpdateMultiplayer(Ball& ball, Pad& pad1, Pad& pad2, Screen& screen, int scr
 
 	if (pad1.points >= pad1.maxPoints)
 	{
-		//DrawText("Player 1 wins1", 300, GetScreenHeight() - 300, 30, RED);
+		slSetTextAlign(SL_ALIGN_CENTER);
+		slSetForeColor(1, 0, 0, 1);
+		slSetFontSize(30);
+		slText(300, 150, "Player 1 wins!");
 		if (slGetKey(SL_KEY_ENTER))
 		{
 			PointsReset(pad1);
@@ -354,7 +377,10 @@ void UpdateMultiplayer(Ball& ball, Pad& pad1, Pad& pad2, Screen& screen, int scr
 
 	else if (pad2.points >= pad2.maxPoints)
 	{
-		//DrawText("Player 2 wins!", 300, GetScreenHeight() - 300, 30, RED);
+		slSetTextAlign(SL_ALIGN_CENTER);
+		slSetForeColor(1, 0, 0, 1);
+		slSetFontSize(30);
+		slText(300, 150, "Player 2 wins!");
 		if (slGetKey(SL_KEY_ENTER))
 		{
 			PointsReset(pad1);
@@ -448,19 +474,26 @@ void GameLoop()
 			break;
 
 		case Rules:
+			slSetTextAlign(SL_ALIGN_LEFT);
+			slSetForeColor(1, 1, 1, 1);
+			slSetFontSize(25);
+			slText(25, 250, "-Use \"w and s\" to move de left pad");
+			slText(25, 225, "-And the up and down arrow keys for the right pad");
+			slText(25, 200, "-The first one to score 7 points wins");
+			slText(25, 175, "-Press \"backspace\" to return to the menu");
 
-			/*DrawText("-Use \"w and s\" to move de left pad", GetScreenWidth() - 700, GetScreenHeight() / 2 - 100, 25, WHITE);
-			DrawText("-And the up and down arrow keys for the right pad", GetScreenWidth() - 700, GetScreenHeight() / 2 - 50, 25, WHITE);
-			DrawText("-The first one to score 7 points wins", GetScreenWidth() - 700, GetScreenHeight() / 2, 25, WHITE);
-			DrawText("-Press \"backspace\" to return to the menu", GetScreenWidth() - 700, GetScreenHeight() - 180, 25, WHITE);
-			*/if (slGetKey(SL_KEY_BACKSPACE))
+			if (slGetKey(SL_KEY_BACKSPACE))
 			{
 				screen = Screen::MainMenu;
 			}
 			break;
 
 		case Credits:
-			//DrawText("Game made by Joaquin Herrero Lendner", GetScreenWidth() / 2 - 200, GetScreenHeight() / 2, 25, WHITE);
+			slSetTextAlign(SL_ALIGN_CENTER);
+			slSetForeColor(1, 1, 1, 1);
+			slSetFontSize(25);
+			slText(400, 225, "Game made by Joaquin Herrero Lendner");
+
 			if (slGetKey(SL_KEY_BACKSPACE))
 			{
 				screen = Screen::MainMenu;
@@ -468,9 +501,14 @@ void GameLoop()
 			break;
 
 		case Exit:
-			/*DrawText("Do yo want to close the game?", GetScreenWidth() - 700, GetScreenHeight() / 2, 25, WHITE);
-			DrawText("Press \"esc\" to close the game or \"backspace\" to return to the menu", GetScreenWidth() - 700, GetScreenHeight() - 200, 15, WHITE);
-			*/if (slGetKey(SL_KEY_ESCAPE))
+			slSetTextAlign(SL_ALIGN_CENTER);
+			slSetForeColor(1, 1, 1, 1);
+			slSetFontSize(25);
+			slText(400, 250, "Do yo want to close the game?");
+			slText(400, 225, "Press \"esc\" to close the game");
+			slText(400, 200, "or \"backspace\" to return to the menu");
+			
+			if (slGetKey(SL_KEY_ESCAPE))
 			{
 				endGame = true;
 			}
