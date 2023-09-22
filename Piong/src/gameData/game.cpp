@@ -62,7 +62,8 @@ void DrawFigures(Pad pad1, Pad pad2, Ball ball, int screenWidth, int screenHeigh
 	//DrawText(TextFormat("%i", pad1.points), GetScreenWidth() / 2 - 50, 10, 20, WHITE);
 	//DrawText(TextFormat("%i", pad2.points), GetScreenWidth() / 2 + 50, 10, 20, WHITE);
 
-	slRectangleFill(GetScreenWidth(screenWidth) / 2, GetScreenHeight(screenHeight) / 2, 5, GetScreenHeight(screenHeight));
+	slSetForeColor(1, 1, 1, 1);
+	slRectangleFill(screenWidth / 2,screenHeight / 2, 5,screenHeight);
 
 	slSetForeColor(4, 0, 4, 1);
 	slRectangleFill(pad1.positionX, pad1.positionY, pad1.width, pad1.height);
@@ -169,12 +170,12 @@ void PadMovement(Pad& pad, int screenHeight)
 {
 	if (slGetKey(pad.keyUp))
 	{
-		//pad.positionY -= pad.speed * GetFrameTime();
+		pad.positionY -= pad.speed * slGetDeltaTime();
 	}
 
 	if (slGetKey(pad.keyDown))
 	{
-		//pad.positionY += pad.speed * GetFrameTime();
+		pad.positionY += pad.speed * slGetDeltaTime();
 	}
 
 	PadColision(pad, screenHeight);
@@ -184,11 +185,11 @@ void IaPadMovement(Pad& pad, Ball ball)
 {
 	if (pad.positionY + pad.height / 2 > ball.positionY)
 	{
-		//pad.positionY -= 180.0f * GetFrameTime();
+		pad.positionY -= 180.0f * slGetDeltaTime();
 	}
 	else if (pad.positionY + pad.width / 2 <= ball.positionY)
 	{
-		//pad.positionY += 180.0f * GetFrameTime();
+		pad.positionY += 180.0f * slGetDeltaTime();
 	}
 }
 
@@ -262,8 +263,8 @@ void BallMovement(Ball& ball, Pad& pad1, Pad& pad2, int screenWidth, int screenH
 		isBallInicialSpeedRandomized = true;
 	}
 
-	//ball.positionX += ball.speed.x * ballInicialSpeedX * GetFrameTime();
-	//ball.positionY += ball.speed.y * ballInicialSpeedY * GetFrameTime();
+	ball.positionX += ball.speed.x * ballInicialSpeedX * slGetDeltaTime();
+	ball.positionY += ball.speed.y * ballInicialSpeedY * slGetDeltaTime();
 
 	if ((ball.positionX >= (GetScreenWidth(screenWidth) - ball.radius)) || (ball.positionX <= ball.radius))
 		ball.speed.x *= -1.0f;
