@@ -4,19 +4,19 @@
 
 struct Pad
 {
-	double positionX;
-	double positionY;
+	float positionX;
+	float positionY;
 
 	int keyUp;
 	int keyDown;
 
-	int width;
-	int height;
+	float width;
+	float height;
 
 	int minPosition;
 	int maxPosition;
 
-	int speed;
+	float speed;
 
 	int points;
 	int minPoints;
